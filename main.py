@@ -4,10 +4,11 @@ import logging
 import sys
 
 from utils.commands import set_commands
-from handlers.start import start
+from handlers import start, search_params
 
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, Router, types
+from aiogram import Bot, Dispatcher, Router, types, F
+from aiogram.types import BotCommand
 from aiogram.filters import Command, CommandStart
 from aiogram.client.default import DefaultBotProperties
 
@@ -18,11 +19,12 @@ dp = Dispatcher()
 
 async def main() -> None:
     """Запуск бота"""
-    
+
     bot = Bot(token, default=DefaultBotProperties(parse_mode='HTML'))
     await set_commands(bot)
 
-    dp.message.register(start, CommandStart())
+    dp.message.register(start.start, CommandStart())
+    dp.message.register(search_params.set_search_params, F.text == "Задать параметры поиска")
 
     try:
         await dp.start_polling(bot)
