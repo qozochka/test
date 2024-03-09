@@ -4,7 +4,9 @@ import logging
 import sys
 
 from utils.commands import set_commands
-from handlers import start, search_params
+from utils.forms import SearchForm
+from handlers.core import start
+from handlers.form_location import form_location, select_district, select_street, form_location_end
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router, types, F
@@ -23,8 +25,12 @@ async def main() -> None:
     bot = Bot(token, default=DefaultBotProperties(parse_mode='HTML'))
     await set_commands(bot)
 
-    dp.message.register(start.start, CommandStart())
-    dp.message.register(search_params.set_search_params, F.text == "Задать параметры поиска")
+    dp.message.register(start, CommandStart())
+    dp.message.register(form_location, F.text == "Выбрать местоположение квартиры")
+
+    dp.message.register(select_district, SearchForm.GET_CITY)
+    dp.message.register(select_street, SearchForm.GET_DISTRICT)
+    dp.message.register(form_location_end, SearchForm.GET_STREET)
 
     try:
         await dp.start_polling(bot)
