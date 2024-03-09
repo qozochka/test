@@ -7,6 +7,10 @@ from config import host, user, password, database
 
 
 class DBConnection:
+    """
+    Данный класс обрабатывает все запросы для БД
+    в нём реализуются методы для каждой задачи, необходимой в работе с БД
+    """
     def __init__(self):
         try:
             with connect(

@@ -8,6 +8,9 @@ class DataParsing:
     """
     Класс обрабатывает парсинг ссылки с фильтрами с циан
     для этого используется метод get_url_list
+    Также в нём есть вложенный класс ParserFromPage
+    для получения данных со страницы, используется метод get_parsed_data
+    Данный метод парсит данные со страницы с фильтрами
     """
 
     def __init__(self):
@@ -29,15 +32,35 @@ class DataParsing:
         return parser.url_list
 
     def get_parsed_data(self, url):
+        """
+        Используется для парсинга данных со страницы с фильтрами
+        """
         data = self.ParserFromPage(url)
         return data.parse()
 
     class ParserFromPage:
+        """
+        Данный класс необходим для более удобной формой записи и управления парсингом со страницы
+        создаётся объект класса, внутри класса Dataparsing
+        после чего, классу ParserFromPage передаётся ссылка на страницу с фильтрами
+        В классе есть метод parse, который парсит данные и возвращает кортеж из массивов
+        """
+
         def __init__(self, url):
             self.url = url
             self.soup = BeautifulSoup(urlopen(self.url), 'lxml')
 
         def parse(self):
+            """
+            Метод парсит данные по ссылке, которую передали при инициализации объекта
+            Содержит в себе атрибуты:
+            addresses_list
+            addresses_url
+            addresses_description
+            addresses_price
+            Каждый хранит в себе адреса, ссылку на объявление, описание квадратуры и цену соответственно
+            :return addresses_list, addresses_url, addresses_description, addresses_price:
+            """
             divs = self.soup.find_all('div', class_="_93444fe79c--card--ibP42")
             addresses_list = []
             addresses_url = []
@@ -57,7 +80,8 @@ class DataParsing:
                                                              "_93444fe79c--lineHeight_28px--KFXmc "
                                                              "_93444fe79c--fontWeight_bold--BbhnX "
                                                              "_93444fe79c--fontSize_22px--sFuaL "
-                                                             "_93444fe79c--display_block--KYb25 _93444fe79c--text--e4SBY "
+                                                             "_93444fe79c--display_block--KYb25 "
+                                                             "_93444fe79c--text--e4SBY "
                                                              "_93444fe79c--text_letterSpacing__normal--tfToq").text)
                 addresses_price.append(div.find('div',
                                                 class_="_93444fe79c--container--aWzpE").text)

@@ -4,6 +4,10 @@ from parser.view import View
 
 
 class Controller:
+    '''
+    Данный класс отвечает за запуск и обработку всей программы.
+    Является связующим звеном всех остальных классов и методов
+    '''
     def __init__(self):
         self.parser = DataParsing()
         self.model = DBConnection()
@@ -18,7 +22,7 @@ class Controller:
     def show_url_by_user_id(self, user_id):
         return self.view.show_url(self.model.select_url_by_user_id(user_id))
 
-    def add_data(self, user_id, url):
+    def add_user_url(self, user_id, url):
         self.model.insert_data(user_id, url)
 
     def parsing_url(self, rooms, location, **filter_settings):

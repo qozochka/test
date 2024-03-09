@@ -13,6 +13,11 @@ if __name__ == "__main__":
     controller = Controller()
     # controller.create_table()
     # controller.add_data(123123, controller.parsing_url(1, location="Красноярск", **filter_settings))
-
+    addresses_dict = {}
     for item in controller.parsing_from_url(123123):
-        print(item, "\n")
+        for num in range(len(item)):
+            if num not in addresses_dict.keys():
+                addresses_dict[num] = []
+            addresses_dict[num].append(item[num])
+    for item in addresses_dict.values():
+        print(item, '\n')
