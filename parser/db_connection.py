@@ -1,167 +1,57 @@
 """
-Модуль содержит класс DBConnection, который используется для связи с бд
+Модуль содержит класс DBConnection, который используется для связи с json файлами
 """
-from mysql.connector import connect, Error
+import json
+import os
 
-from config import host, user, password, database
+from config import USERS_URLS_FILENAME
 
 
 class DBConnection:
     """
-    Данный класс обрабатывает все запросы для БД
-    в нём реализуются методы для каждой задачи, необходимой в работе с БД
+    Данный класс обрабатывает все запросы для файлов json
+    в нём реализуются методы для каждой задачи, необходимой в работе с json
     """
-    def __init__(self):
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password
-            ) as connection:
-                create_db_query = "CREATE DATABASE IF NOT EXISTS db"
-                with connection.cursor() as cursor:
-                    cursor.execute(create_db_query)
-                    connection.commit()
-        except Error as e:
-            print(e)
 
-    def create_table(self):
+    def insert_data(self, user_id: int, url: str):
         """
-        Метод создаёт таблицу (если такой ещё не существует)
-        Временно создаётся таблица, которая хранит id из telegram и url-адрес
-        :return:
+        Метод позволяет заполнить json файл данными в виде user_id и url
         """
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database
-            ) as connection:
-                try:
-                    # create table
-                    with connection.cursor() as cursor:
-                        create_table_query = """
-                        CREATE TABLE IF NOT EXISTS users_urls(
-                        user_id INT NOT NULL PRIMARY KEY,
-                        url TEXT
-                        )
-                        """
-                        cursor.execute(create_table_query)
-                        connection.commit()
-                        print("Table created successfully")
-                finally:
-                    connection.close()
+        if os.path.exists(USERS_URLS_FILENAME) and os.path.getsize(USERS_URLS_FILENAME) > 0:
+            with open(USERS_URLS_FILENAME, "r") as fh:
+                data = json.load(fh)
 
-        except Error as ex:
-            print("Connection refused...")
-            print(ex)
-
-    def drop_table(self):
-        """
-        Метод удаляет таблицу, пока, которую задали вручную
-        :return:
-        """
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database
-            ) as connection:
-                try:
-                    # drop table
-                    with connection.cursor() as cursor:
-                        create_table_query = """
-                        DROP TABLE IF EXISTS users_urls
-                        """
-                        cursor.execute(create_table_query)
-                        connection.commit()
-                        print("Table deleted successfully")
-                finally:
-                    connection.close()
-
-        except Error as ex:
-            print("Connection refused...")
-            print(ex)
-
-    def insert_data(self, user_id, url):
-        """
-        Метод позволяет заполнить таблицу users данными в виде user_id и url
-        """
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database
-            ) as connection:
-                try:
-                    # insert data
-                    with connection.cursor() as cursor:
-                        insert_query = "INSERT INTO users_urls (user_id, url) VALUES (%s, %s)"
-                        cursor.execute(insert_query, (user_id, url))
-                        connection.commit()
-                        print('Data insert successfully completed')
-                finally:
-                    connection.close()
-
-        except Error as ex:
-            print("Connection refused...")
-            print(ex)
+            with open(USERS_URLS_FILENAME, "w") as fh:
+                data[user_id] = url
+                json.dump(data, fh, indent=4)
+        else:
+            with open(USERS_URLS_FILENAME, "w") as fh:
+                data = {user_id: url}
+                json.dump(data, fh, indent=4)
 
     def select_urls(self):
         """
-        Метод используется для получения всех ссылок из таблицы users_urls
+        Метод используется для получения всех ссылок из файла users_urls.json
         Возвращает список кортежей (user_id, url)
         :return rows:
         """
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database
-            ) as connection:
-                try:
-                    # select data
-                    with connection.cursor() as cursor:
-                        select_query = 'SELECT * FROM users_urls'
-                        cursor.execute(select_query)
-
-                        rows = cursor.fetchall()
-                finally:
-                    connection.close()
-                    return rows
-
-        except Error as ex:
-            print("Connection refused...")
-            print(ex)
+        if os.path.exists(USERS_URLS_FILENAME) and os.path.getsize(USERS_URLS_FILENAME) > 0:
+            with open(USERS_URLS_FILENAME, "r+") as fh:
+                data = json.load(fh)
+                return data
+        else:
+            print("u dont have a users_urls")
 
     def select_url_by_user_id(self, user_id):
         """
-        Метод используется для получения ссылки по user_id из таблицы users_urls
+        Метод используется для получения ссылки по user_id из users_urls.json
         Возвращает список кортежей (user_id, url)
         :return rows:
         """
-        try:
-            with connect(
-                    host=host,
-                    user=user,
-                    password=password,
-                    database=database
-            ) as connection:
-                try:
-                    # select data
-                    with connection.cursor() as cursor:
-                        select_query = f'SELECT * FROM users_urls WHERE user_id = {user_id}'
-                        cursor.execute(select_query)
-
-                        row = cursor.fetchone()
-                finally:
-                    connection.close()
+        data = self.select_urls()
+        if len(data) != 0:
+            for row in data.items():
+                if int(row[0]) == user_id:
                     return row
-
-        except Error as ex:
-            print("Connection refused...")
-            print(ex)
+        else:
+            print("u dont have a users_urls")

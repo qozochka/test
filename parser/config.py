@@ -1,7 +1,4 @@
 """
 Модуль используется для использования конфигов в парсере
 """
-host = 'localhost'
-user = 'root'
-password = 'qwerty123'
-database = 'db'
+USERS_URLS_FILENAME = "user_urls.json"
