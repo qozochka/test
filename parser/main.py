@@ -11,8 +11,8 @@ if __name__ == "__main__":
     # parsing_url = DataParsing(1, location="Красноярск", **filter_settings)
 
     controller = Controller()
-    # controller.create_table()
-    # controller.add_data(123123, controller.parsing_url(1, location="Красноярск", **filter_settings))
+    controller.create_table()
+    controller.add_user_url(123123, controller.parsing_url(1, location="Красноярск", **filter_settings))
     addresses_dict = {}
     for item in controller.parsing_from_url(123123):
         for num in range(len(item)):
