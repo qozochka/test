@@ -5,3 +5,5 @@ class SearchForm(StatesGroup):
     GET_CITY = State()
     GET_DISTRICT = State()
     GET_STREET = State()
+    GET_ROOMS = State()
+    GET_FLOOR = State()
