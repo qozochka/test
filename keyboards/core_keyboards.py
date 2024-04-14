@@ -2,6 +2,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
+
 async def get_main_keyboard() -> ReplyKeyboardMarkup:
     """ Клавиатура основного действия """
     return ReplyKeyboardMarkup(
@@ -27,27 +28,28 @@ async def get_main_keyboard() -> ReplyKeyboardMarkup:
     )
 
 
-async def get_search_keyboard() -> InlineKeyboardMarkup:
+async def get_search_keyboard() -> ReplyKeyboardMarkup:
     """ Клавиатура отвечающая за выбор места квартиры """
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
+    return ReplyKeyboardMarkup(
+        keyboard=[
             [
-                InlineKeyboardButton(
-                    text="Город",
-                    callback_data="location_city",
+                KeyboardButton(
+                    text="Выбрать рядом со мной",
+                    request_location=True
+
                 ),
             ],
             [
-                InlineKeyboardButton(
-                    text="Район",
-                    callback_data="location_district",
-                ),
-                InlineKeyboardButton(
-                    text="Улица",
-                    callback_data="location_street",
-                ),
+                KeyboardButton(
+                    text="Выбрать город из списка:"
+                )
             ]
-        ]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        input_field_placeholder="Выбери действие",
+        selective=True
+
     )
 
 

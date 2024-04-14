@@ -12,5 +12,3 @@ async def form_flat(message: Message, state: FSMContext):
     await message.answer("Введите количество комнат (от 1 до 4, 5 для выбора \"5 или больше\", - чтобы пропустить.)")
     await state.set_state(SearchForm.GET_ROOMS)
 
-
-async def 

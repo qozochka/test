@@ -3,10 +3,13 @@ import os
 import logging
 import sys
 
+from aiogram.client import bot
+
+
 from utils.commands import set_commands
 from utils.forms import SearchForm
 from handlers.core import start
-from handlers.form_location import form_location, select_district, select_street, form_location_end
+from handlers.form_location import form_location, select_district, select_street, form_location_end, handle_location
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, Router, types, F
@@ -27,6 +30,7 @@ async def main() -> None:
 
     dp.message.register(start, CommandStart())
     dp.message.register(form_location, F.text == "Выбрать местоположение квартиры")
+    dp.message.register(handle_location, SearchForm.GET_LOCATIONS)
 
     dp.message.register(select_district, SearchForm.GET_CITY)
     dp.message.register(select_street, SearchForm.GET_DISTRICT)
