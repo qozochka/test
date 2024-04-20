@@ -1,4 +1,5 @@
-from aiogram import Router
+""" Модуль состояния форм """
+
 from aiogram.fsm.state import StatesGroup, State
 
 

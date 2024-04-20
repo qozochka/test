@@ -1,3 +1,5 @@
+""" Модуль основных клавиатур """
+
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 
 
@@ -14,6 +16,9 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
                 ),
             ],
             [
+                KeyboardButton(
+                    text="Посмотреть параметры квартиры"
+                ),
                 KeyboardButton(
                     text="Поиск"
                 ),
