@@ -4,7 +4,7 @@
 import json
 import os
 
-from config import USERS_URLS_FILENAME
+from parser.config import USERS_URLS_FILENAME
 
 
 class DBConnection:

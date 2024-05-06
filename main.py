@@ -6,9 +6,8 @@ import logging
 import sys
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
-from aiogram.filters import CommandStart
 from aiogram.client.default import DefaultBotProperties
-from handlers.core import start, show_settings
+from handlers.core import core_router
 from handlers.form_flat import flat_router
 from handlers.form_location import location_router
 from data.queries import initialize_database
@@ -24,10 +23,7 @@ async def main() -> None:
 
     dp = Dispatcher()
     dp.message.middleware.register(SaveUserMiddleware())
-    dp.include_routers(location_router, flat_router)
-
-    dp.message.register(start, CommandStart())
-    dp.message.register(show_settings, F.text == "Посмотреть настройки")
+    dp.include_routers(location_router, flat_router, core_router)
 
     await set_commands(bot)
 
