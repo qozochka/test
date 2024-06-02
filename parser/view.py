@@ -19,7 +19,5 @@ class View:
                 if num not in addresses_dict.keys():
                     addresses_dict[num] = []
                 addresses_dict[num].append(item[num])
-        for item in addresses_dict.values():
-            print(item, '\n')
 
         return addresses_dict

@@ -7,6 +7,7 @@ import sys
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
 from aiogram.client.default import DefaultBotProperties
+from handlers.cian_search import cian_search_router
 from handlers.core import core_router
 from handlers.form_flat import flat_router
 from handlers.form_location import location_router
@@ -23,7 +24,7 @@ async def main() -> None:
 
     dp = Dispatcher()
     dp.message.middleware.register(SaveUserMiddleware())
-    dp.include_routers(location_router, flat_router, core_router)
+    dp.include_routers(location_router, flat_router, core_router, cian_search_router)
 
     await set_commands(bot)
 
