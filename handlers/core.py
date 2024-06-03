@@ -1,7 +1,6 @@
 """ Модуль с основными командами бота """
 
 import json
-from parser.controller import Controller
 from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.filters import CommandStart
@@ -13,26 +12,6 @@ core_router = Router()
 async def start(message: Message) -> None:
     """ Хендлер для команды /start """
     await message.answer("Добро пожаловать в бот-риелтор. Этот бот поможет вам с поиском недвижимости.", reply_markup=get_main_keyboard())
-
-
-
-@core_router.message(F.text == "Поиск")
-async def search(message: Message) -> None:
-    settings = json.loads(get_settings(message.from_user.id))
-    controller = Controller()
-    city = rooms = ""
-    try:
-        city = settings["city"]
-    except KeyError as err:
-        print(err)
-    try:
-        rooms = settings["rooms"]
-    except KeyError as err:
-        print(err)
-
-    res = controller.parsing_url(rooms, city)
-
-    await message.answer(res)
 
 
 
@@ -60,8 +39,6 @@ def location_settings_to_string(settings: dict) -> str:
     res = concat_param(res, settings, "city")
     res += "\nРайон: "
     res = concat_param(res, settings, "district")
-    res += "\nУлица: "
-    res = concat_param(res, settings, "street")
 
     return res
 
@@ -74,8 +51,8 @@ def flat_settings_to_string(settings):
     res = "Параметры квартиры: "
     res += "\nКоличество комнат: "
     res = concat_param(res, settings, "rooms")
-    res += "\nЦеновой диапазон: "
-    res = concat_price_range(res, settings)
+    res += "\nМинимальная цена: "
+    res = concat_param(res, settings, "min_price")
 
     return res
 

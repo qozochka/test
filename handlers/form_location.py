@@ -102,29 +102,13 @@ async def select_district(message: Message, state: FSMContext) -> None:
 
 
 @location_router.message(LocationForm.GET_DISTRICT)
-async def select_street(message: Message, state: FSMContext) -> None:
+async def form_end(message: Message, state: FSMContext) -> None:
     """ Запускатеся после того как пользователь выбрал район, требует выбрать улицу """
     if message.text == "-":
         await message.answer("Ввод района пропущен.")
     else:
         await message.answer(f"Вы выбрали район: {message.text}.")
-        await state.update_data(district=message.text)
-
-    await message.answer("\nТеперь выберите улицу")
-    await state.set_state(LocationForm.GET_STREET)
-
-
-@location_router.message(LocationForm.GET_STREET)
-async def form_location_end(message: Message, state: FSMContext) -> None:
-    """ Конец заполнения данных о расположении квартиры """
-    if message.text == "-":
-        await message.answer("Ввод улицы пропущен.")
-    else:
-        await message.answer(f"Вы выбрали улицу: {message.text}.")
-        await state.update_data(street=message.text)
-
     data = await state.get_data()
     save_settings(message.from_user.id, json.dumps(data))
-
     await message.answer("Информация о местоположении квартиры заполнена.", reply_markup=get_main_keyboard())
     await state.set_state()

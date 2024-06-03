@@ -1,6 +1,7 @@
 from parser.dataparsing import DataParsing
 from parser.db_connection import DBConnection
 from parser.view import View
+from classes.flat import Flat
 
 
 class Controller:
@@ -43,4 +44,12 @@ class Controller:
         Метод парсит данные со страницы с фильтрами и возвращает их
         """
         data = self.parser.get_parsed_data(self.model.select_url_by_user_id(user_id)[1])
-        return self.view.show_parse_data(data)
+        resulting_data = list(self.view.show_parse_data(data).values())
+        class_data = []
+        for k in resulting_data:
+            try:
+                class_data.append(Flat(k))
+            except:
+                print("Квартира " + str(k) + " не добавлена.")
+                pass
+        return class_data

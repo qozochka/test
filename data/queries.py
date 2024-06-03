@@ -36,6 +36,39 @@ def save_settings(id, location_settings) -> bool:
         return False
 
 
+def get_current_cian_page(id):
+    """ Получает текущую страницу Циана """
+    data = cursor.execute("SELECT cian_page FROM users WHERE id = ?", (id, ))
+    return data.fetchone()[0]
+
+
+def save_current_cian_page(id, page) -> bool:
+    """ Сохраняет текущую страницу Циана """
+    cursor.execute("UPDATE users SET cian_page = ? WHERE id = ?", (page, id))
+    connection.commit()
+    return True
+
+
+def get_current_array_page(id) -> int:
+    """ Получает текущую страницу массива"""
+    try:
+        data = cursor.execute("SELECT array_page FROM users WHERE id = ?", (id, ))
+        return data.fetchone()[0]
+    except DbError as err:
+        print(err)
+        return False
+
+
+def save_current_array_page(id, page) -> bool:
+    """ Сохраняет текущую страницу массива """
+    try:
+        cursor.execute("UPDATE users SET array_page = ? WHERE id = ?", (page, id))
+        connection.commit()
+        return True
+    except DbError as err:
+        print(err)
+        return False
+
 
 def save_user(id) -> bool:
     """ Сохраняет пользователя в БД """
