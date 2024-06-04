@@ -79,3 +79,17 @@ def save_user(id) -> bool:
     except DbError as err:
         print(err)
         return False
+    
+
+# Сделать для авито
+def get_current_avito_page(id):
+    """ Получает текущую страницу Авито """
+    data = cursor.execute("SELECT avito_page FROM users WHERE id = ?", (id, ))
+    return data.fetchone()[0]
+
+
+def save_current_avito_page(id, page) -> bool:
+    """ Сохраняет текущую страницу Авито """
+    cursor.execute("UPDATE users SET avito_page = ? WHERE id = ?", (page, id))
+    connection.commit()
+    return True

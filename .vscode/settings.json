@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./avito_parser"
+    ]
+}
