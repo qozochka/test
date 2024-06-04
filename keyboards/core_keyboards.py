@@ -29,3 +29,28 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
         input_field_placeholder="Выбери действие", 
         selective=True
     )
+
+
+def get_search_keyboard() -> ReplyKeyboardMarkup:
+    """ Клавиатура отвечающая за выбор места квартиры """
+    return ReplyKeyboardMarkup(
+        keyboard=[
+            [
+                KeyboardButton(
+                    text="Выбрать рядом со мной",
+                    request_location=True
+                ),
+            ],
+            [
+                KeyboardButton(
+                    text="Ввести город вручную"
+                )
+            ]
+        ],
+        resize_keyboard=True,
+        one_time_keyboard=True,
+        input_field_placeholder="Выбери действие",
+        selective=True
+    )
+
+
