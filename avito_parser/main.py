@@ -1,3 +1,4 @@
+import time
 
 from selenium.webdriver import ActionChains
 from avito_parsing import AvitoParsing
@@ -7,15 +8,16 @@ import undetected_chromedriver as uc
 from selenium.webdriver.chrome.options import Options
 
 options = Options()
+
 options.add_argument("--headless")
 driver = uc.Chrome(options=options)
 actions = ActionChains(driver)
 
-
+# Пример запроса ниже
 
 
 if __name__ == "__main__":
-    for_url = AvitoParsing(['Красноярск', 'Октябрьский'], 0, 0, 50000, True, False, driver, actions)
+    for_url = AvitoParsing(['Красноярск', 'Железнодорожный'], 0, 0, 50000, True, False, driver, actions)
     user_url = for_url.get_user_url()
     connectionJs = ConectionJs()
     connectionJs.insert_data(178524, user_url)
@@ -23,6 +25,7 @@ if __name__ == "__main__":
     parser.get_items()
     print("".join(parser.format_data()))
     parser.close()
+    time.sleep(1)
 
 
 

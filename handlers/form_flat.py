@@ -5,6 +5,7 @@ from aiogram import F, Router
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 from data.queries import save_settings
+from keyboards.core_keyboards import get_main_keyboard
 from utils.forms import FlatForm
 from utils.utils import isInteger
 
@@ -67,6 +68,6 @@ async def form_flat_end(message: Message, state: FSMContext) -> None:
 
     data = await state.get_data()
     save_settings(message.from_user.id, json.dumps(data))
-    await message.answer("Информация о квартире заполнена.")
+    await message.answer("Информация о квартире заполнена.", reply_markup=get_main_keyboard())
     await state.set_state()
 

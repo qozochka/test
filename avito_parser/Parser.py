@@ -33,43 +33,45 @@ class Parser:
             self.count -= 1
 
     def parse_page(self):
-        amount_of_flats = int(self.driver.find_element(By.CSS_SELECTOR, "[data-marker='page-title/count']").text)
-        count = 0
+        try:
+            amount_of_flats = int(self.driver.find_element(By.CSS_SELECTOR, "[data-marker='page-title/count']").text)
+            count = 0
+            time.sleep(3)
+            flats = self.driver.find_elements(By.CSS_SELECTOR, "div[data-marker='item']")
+            for flat in flats:
+                if count == amount_of_flats:
+                    break
+                try:
+                    self.info_titles.append(flat.find_element(By.CSS_SELECTOR, "[itemprop='name']").text)
+                except NoSuchElementException:
+                    self.info_titles.append("Название отсутствует")
+                try:
+                    self.info_urls.append(flat.find_element(By.CSS_SELECTOR, "[itemprop='url']").get_attribute("href"))
+                except NoSuchElementException:
+                    self.info_urls.append("Ссылка отсутствует")
+                try:
+                    self.info_prices.append(
+                        flat.find_element(By.CSS_SELECTOR, "[itemprop='price']").get_attribute("content"))
+                except NoSuchElementException:
+                    self.info_prices.append("Цена отсутствует")
+                try:
+                    self.info_descriptions.append(
+                        flat.find_element(By.XPATH, ".//div[@class='iva-item-descriptionStep-C0ty1']/p").text)
+                except NoSuchElementException:
+                    self.info_descriptions.append("Описание отсутствует")
+                try:
+                    address_element = flat.find_element(By.XPATH,
+                                                        ".//div[@data-marker='item-address']")
 
-        time.sleep(3)
-        flats = self.driver.find_elements(By.CSS_SELECTOR, "div[data-marker='item']")
-        for flat in flats:
-            if count == amount_of_flats:
-                break
-            try:
-                self.info_titles.append(flat.find_element(By.CSS_SELECTOR, "[itemprop='name']").text)
-            except NoSuchElementException:
-                self.info_titles.append("Название отсутствует")
-            try:
-                self.info_urls.append(flat.find_element(By.CSS_SELECTOR, "[itemprop='url']").get_attribute("href"))
-            except NoSuchElementException:
-                self.info_urls.append("Ссылка отсутствует")
-            try:
-                self.info_prices.append(
-                    flat.find_element(By.CSS_SELECTOR, "[itemprop='price']").get_attribute("content"))
-            except NoSuchElementException:
-                self.info_prices.append("Цена отсутствует")
-            try:
-                self.info_descriptions.append(
-                    flat.find_element(By.XPATH, ".//div[@class='iva-item-descriptionStep-C0ty1']/p").text)
-            except NoSuchElementException:
-                self.info_descriptions.append("Описание отсутствует")
-            try:
-                address_element = flat.find_element(By.XPATH,
-                                                    ".//div[@data-marker='item-address']")
+                    self.info_addresses.append(address_element.text)
+                except NoSuchElementException:
+                    self.info_addresses.append("Адрес отсутствует")
+                time.sleep(1)
+                count += 1
 
-                self.info_addresses.append(address_element.text)
-            except NoSuchElementException:
-                self.info_addresses.append("Адрес отсутствует")
-            time.sleep(1)
-            count += 1
-
-        return self.info_titles, self.info_urls, self.info_prices, self.info_addresses
+            return self.info_titles, self.info_urls, self.info_prices, self.info_addresses
+        except Exception as e:
+            return "Нет подходящих квартир", e
 
     def format_data(self):
         formatted_data = []

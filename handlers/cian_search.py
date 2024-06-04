@@ -7,7 +7,8 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from parser.controller import Controller
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from data.queries import get_settings, save_current_cian_page, get_current_cian_page, get_current_array_page, save_current_array_page
+from data.queries import get_settings, save_current_cian_page, get_current_cian_page, get_current_array_page, \
+    save_current_array_page
 
 cian_search_router = Router()
 

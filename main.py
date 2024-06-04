@@ -6,7 +6,8 @@ import logging
 import sys
 
 from utils.forms import LocationForm
-from handlers.form_location import form_location, select_district, select_street, form_location_end, handle_location
+from handlers.form_location import select_district, handle_location, form_end, form_location, \
+    get_near_me
 
 from dotenv import load_dotenv
 from aiogram import Bot, Dispatcher, F
@@ -34,10 +35,10 @@ async def main() -> None:
     await set_commands(bot)
     dp.message.register(form_location, F.text == "Выбрать местоположение квартиры")
     dp.message.register(handle_location, LocationForm.GET_LOCATIONS)
-    dp.message.register(handle_location, LocationForm.NEAR_ME)
+    dp.message.register(get_near_me, LocationForm.NEAR_ME)
     dp.message.register(select_district, LocationForm.GET_CITY)
-    dp.message.register(select_street, LocationForm.GET_DISTRICT)
-    dp.message.register(form_location_end, LocationForm.GET_STREET)
+    dp.message.register(form_end, LocationForm.GET_DISTRICT)
+
     try:
         await dp.start_polling(bot)
     finally:
