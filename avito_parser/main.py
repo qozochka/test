@@ -1,11 +1,12 @@
 import time
 
-from selenium.webdriver import ActionChains
-from avito_parsing import AvitoParsing
-from Parser import Parser
-from ConnectionJs import ConectionJs
 import undetected_chromedriver as uc
+from avito_parsing import AvitoParsing
+from ConnectionJs import ConectionJs
+from selenium.webdriver import ActionChains
 from selenium.webdriver.chrome.options import Options
+
+from Parser import Parser
 
 options = Options()
 

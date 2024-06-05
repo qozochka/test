@@ -1,6 +1,6 @@
 import os
 import json
-from ConfigAvito import USERS_URLS_FILE
+from avito_parser.ConfigAvito import USERS_URLS_FILE
 
 
 class ConectionJs:

@@ -79,7 +79,7 @@ class Parser:
         for title, address, price, description, url in zip(self.info_titles, self.info_addresses, self.info_prices,
                                                            self.info_descriptions,
                                                            self.info_urls):
-            formatted_data.append(f"{c}. {title},\nАдрес: {address},\nСтоимость: {price},\nОписание: "
+            formatted_data.append(f"\n{c}. {title},\nАдрес: {address},\nСтоимость: {price},\nОписание: "
                                   f"{description}\n{url}\n")
             c += 1
         return formatted_data

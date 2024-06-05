@@ -55,13 +55,27 @@ def flat_settings_to_string(settings):
     res += "\nМинимальная цена: "
     res = concat_param(res, settings, "min_price")
 
+    res += "\nМаксимальная цена: "
+    res = concat_param(res, settings, "cost_max")
+
+    res += "\nБез комиссии: "
+    res = concat_param(res, settings, "without_commission")
+
+    res += "\nБез депозита: "
+    res = concat_param(res, settings, "without_deposit")
+    
     return res
 
 
 def concat_param(string: str, settings: dict, key: str) -> str:
     """ Присоединяет параметр к строке, если он есть """
     try:
-        string += f"{settings[key]}"
+        if (settings[key] == True):
+            string += "да"
+        elif (settings[key] == False):
+            string += "нет"
+        else:
+            string += f"{settings[key]}"
     except:
         string += "[Не заполнено]"
 
