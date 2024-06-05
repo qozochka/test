@@ -55,7 +55,14 @@ async def search(message: Message) -> None:
     user.get_items()
     answer = "".join(user.format_data())
 
-    await message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
+    if len(answer) > 4095:
+        print("T"*100)
+
+        for x in range(0, len(answer), 4095):
+            await message.answer(f"{answer[x:x+4095]}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
+    else:
+        await message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
+        print("OP"*100)
 
 
 @avito_search_router.callback_query(F.data == "next_page")
