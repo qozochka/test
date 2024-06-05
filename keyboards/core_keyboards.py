@@ -20,7 +20,10 @@ def get_main_keyboard() -> ReplyKeyboardMarkup:
                     text="Посмотреть параметры квартиры"
                 ),
                 KeyboardButton(
-                    text="Поиск"
+                    text="Поиск по Циану"
+                ),
+                KeyboardButton(
+                    text="Поиск по Авито"
                 ),
             ]
         ], 

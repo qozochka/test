@@ -11,7 +11,6 @@ from aiogram.types import Message, CallbackQuery
 from data.queries import get_settings, save_current_avito_page, get_current_avito_page, get_current_array_page, \
     save_current_array_page
 
-import time
 from avito_parser.ConnectionJs import ConectionJs
 from selenium.webdriver import ActionChains
 import undetected_chromedriver as uc
@@ -25,7 +24,7 @@ options.add_argument("--headless")
 driver = uc.Chrome(options=options)
 actions = ActionChains(driver)
 
-@avito_search_router.message(F.text == "Поиск")
+@avito_search_router.message(F.text == "Поиск по Авито")
 async def search(message: Message) -> None:
     """Парсинг данных, выдача пользователю менюшки где можно листать квартиры"""
     connectionJs = ConectionJs()
@@ -33,19 +32,9 @@ async def search(message: Message) -> None:
 
     await message.answer("Парсинг данных с Авито...")
 
-    # Корректно ли сораняются сеттингс в бд? в фром флэn и фром локэйшнс сохранение сеттингс в бд (вписал туда доп для авито)
-
     get_and_save_url(uid, 1)
 
     user_url = connectionJs.select_url_by_user_id(uid)[1]
-
-    print("---" * 10)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print("---" * 10)
 
     user = Parser(user_url, driver, actions, 1)
 
@@ -59,34 +48,33 @@ async def search(message: Message) -> None:
         print("T"*100)
 
         for x in range(0, len(answer), 4095):
-            await message.answer(f"{answer[x:x+4095]}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
+            await message.answer(f"{answer[x:x+4095]}",  disable_web_page_preview=True)
     else:
-        await message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
-        print("OP"*100)
+        await message.answer(f"{answer}",  disable_web_page_preview=True)
 
 
-@avito_search_router.callback_query(F.data == "next_page")
-async def get_next_page(callback: CallbackQuery) -> None:
-    """Перелистывает на следующую страницу"""
-    uid = callback.from_user.id
-    controller = Controller()
-    user = Parser(controller.show_url_by_user_id(uid), driver, actions)
-    await callback.message.answer("Парсинг данных c Авито...")
+# @avito_search_router.callback_query(F.data == "next_page_avito")
+# async def get_next_page_avito(callback: CallbackQuery) -> None:
+#     """Перелистывает на следующую страницу"""
+#     uid = callback.from_user.id
+#     controller = Controller()
+#     user = Parser(controller.show_url_by_user_id(uid), driver, actions)
+#     await callback.message.answer("Парсинг данных c Авито...")
 
-    flats = get_flats(uid, 5)
-    answer = user.format_data(flats)
-    await callback.message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
-    await callback.answer()
+#     flats = get_flats(uid, 5)
+#     answer = user.format_data(flats)
+#     await callback.message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
+#     await callback.answer()
 
 
-def get_page_keyboard() -> InlineKeyboardMarkup:
-    """ Создаёт инлайн клавиатуру для листания страниц """
-    builder = InlineKeyboardBuilder()
-    builder.add(InlineKeyboardButton(
-        text="Следующая страница",
-        callback_data="next_page_avito"
-    ))
-    return builder.as_markup()
+# def get_page_keyboard() -> InlineKeyboardMarkup:
+#     """ Создаёт инлайн клавиатуру для листания страниц """
+#     builder = InlineKeyboardBuilder()
+#     builder.add(InlineKeyboardButton(
+#         text="Следующая страница",
+#         callback_data="next_page_avito"
+#     ))
+#     return builder.as_markup()
 
 
 # def extract_correct_values(values: list[Flat], district) -> list[Flat]:
@@ -189,21 +177,11 @@ def get_and_save_url(uid, page: int) -> list[Flat]:
         "without_commission": without_commission,
         "without_deposit": without_deposit,
     }
-    print("NNNNNNN" * 10) # ok
+
     print([city, district], rooms, min_price, cost_max, without_commission, without_deposit, driver, actions)
-    print("NNNNNNN" * 10)
 
     for_url = AvitoParsing([city, district], rooms, min_price, cost_max, without_commission, without_deposit, driver, actions)
     user_url = for_url.get_user_url() # Почему-то возвращает None
-
-    print("***" * 10)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print(user_url)
-    print("***" * 10)
-
 
     connectionJs.insert_data(uid, user_url) # сохраняем url в json
 

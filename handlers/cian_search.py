@@ -11,7 +11,7 @@ from data.queries import get_settings, save_current_cian_page, get_current_cian_
 
 cian_search_router = Router()
 
-@cian_search_router.message(F.text == "Поиск")
+@cian_search_router.message(F.text == "Поиск по Циану")
 async def search(message: Message) -> None:
     """Парсинг данных, выдача пользователю менюшки где можно листать квартиры"""
     uid = message.from_user.id
