@@ -16,4 +16,8 @@ class FlatForm(StatesGroup):
     GET_ROOMS = State()
     GET_FLOOR = State()
     GET_PRICE = State()
+    GET_PRICE = State()
+    GET_COST_MAX = State()
+    GET_WITHOUT_COMMISION = State()
+    GET_WITHOUT_DEPOSIT = State()
 

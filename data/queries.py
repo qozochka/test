@@ -15,6 +15,12 @@ def initialize_database() -> bool:
         return False
 
 
+def get_ids():
+    """ Получает id всех юзеров """
+    data = cursor.execute("SELECT id FROM users")
+    return data.fetchone()
+
+
 def get_settings(id):
     """ Получает настройки пользователя """
     try:
@@ -34,6 +40,19 @@ def save_settings(id, location_settings) -> bool:
     except DbError as err:
         print(err)
         return False
+
+
+def get_newest_cian_id(id) -> int:
+    """ Получает сохранённое id самой новой квартиры с Циана """
+    data = cursor.execute("SELECT cian_first_id FROM users WHERE id = ?", (id, ))
+    return data.fetchone()[0]
+
+
+def save_newest_cian_id(id, cian_first_id) -> bool:
+    """ Сохраняет id самой новой квартиры с Циана """
+    cursor.execute("UPDATE users SET cian_first_id = ? WHERE id = ?", (cian_first_id, id))
+    connection.commit()
+    return True
 
 
 def get_current_cian_page(id):
@@ -81,7 +100,6 @@ def save_user(id) -> bool:
         return False
     
 
-# Сделать для авито
 def get_current_avito_page(id):
     """ Получает текущую страницу Авито """
     data = cursor.execute("SELECT avito_page FROM users WHERE id = ?", (id, ))
