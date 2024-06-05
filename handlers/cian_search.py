@@ -7,8 +7,7 @@ from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from parser.controller import Controller
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
-from data.queries import get_settings, save_current_cian_page, get_current_cian_page, get_current_array_page, \
-    save_current_array_page
+from data.queries import get_settings, save_current_cian_page, get_current_cian_page, get_current_array_page, save_current_array_page
 
 cian_search_router = Router()
 
@@ -22,6 +21,10 @@ async def search(message: Message) -> None:
     save_current_array_page(uid, 1)
 
     flats = get_flats(uid, 5)
+    if len(flats) == 0:
+        await message.answer("Квартир по вашему запросу не найдено. Проверьте правильность введённых данных")
+        return
+
     answer = flats_to_string(flats)
     await message.answer(f"{answer}", reply_markup=get_page_keyboard(), disable_web_page_preview=True)
 
@@ -81,10 +84,15 @@ def get_flats(uid, result_amount: int) -> list[Flat]:
         print(array_page)
         print("DATA:")
         data = get_data(uid, current_page)
+        if len(data) == 0:
+            return []
         print(data)
         print("------")
         first_five = data[(array_page - 1) * result_amount:array_page * result_amount]
         print(first_five)
+
+        # Останавливает работу парсера если он не может ничего найти (если на 4 страницах не найдено 5 результатов)
+
         if district:
             flats.extend(extract_correct_values(first_five, district))
         else:
@@ -103,7 +111,7 @@ def get_flats(uid, result_amount: int) -> list[Flat]:
     return flats
 
 
-def get_data(uid, page: int) -> list[Flat]:
+def get_data(uid, page: int, sort_by = "price_from_min_to_max") -> list[Flat]:
     """ Возвращает список квартир (Flat) со страницы page """
     settings = json.loads(get_settings(uid))
     controller = Controller()
@@ -111,25 +119,26 @@ def get_data(uid, page: int) -> list[Flat]:
     try:
         city = settings["city"]
     except KeyError as err:
-        print(err)
+        print("CITY NOT FOUND.")
+        return []
     try:
         rooms = settings["rooms"]
     except KeyError as err:
+        print("ROOMS NOT FOUND.")
         rooms = 1
-        print(err)
     try:
         district = settings["district"]
     except KeyError as err:
-        print(err)
+        print("DISTRICT NOT FOUND.")
     try:
         min_price = settings["min_price"]
     except KeyError as err:
+        print("MIN PRICE NOT FOUND.")
         min_price = 0
-        print(err)
     filter_settings = {
         "start_page": page,
         "only_flat": True,
-        "sort_by": "price_from_min_to_max",
+        "sort_by": sort_by,
         "min_price": min_price,
     }
 
